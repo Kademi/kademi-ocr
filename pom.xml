@@ -5,6 +5,13 @@
     <artifactId>kademi-ocr</artifactId>
     <version>1000</version>
     <packaging>jar</packaging>
+    <distributionManagement>
+        <repository>
+            <id>bintray-kademi-Kademi</id>
+            <name>bintray-kademi-Kademi</name>
+            <url>https://api.bintray.com/maven/kademi/kademi-cache/kademi-ocr/;publish=1</url>
+        </repository>
+    </distributionManagement>    
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
