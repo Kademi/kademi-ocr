@@ -9,7 +9,7 @@
         <repository>
             <id>bintray-kademi-Kademi</id>
             <name>bintray-kademi-Kademi</name>
-            <url>https://api.bintray.com/maven/kademi/kademi-cache/kademi-ocr/;publish=1</url>
+            <url>https://api.bintray.com/maven/kademi/kademi-public/kademi-ocr/;publish=1</url>
         </repository>
     </distributionManagement>    
     <dependencies>
