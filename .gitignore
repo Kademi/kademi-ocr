@@ -1,1 +1,7 @@
-/target/
+kademi-ocr/target/
+kademi-ocr-python/build
+__pycache__
+/kademi-ocr/nbproject/
+.vscode
+dist/
+kademi_ocr_cli.egg-info
