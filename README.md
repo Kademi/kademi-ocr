@@ -12,7 +12,7 @@ Install tesseract-ocr:
 
 Install dependencies for Pillow and Wand (Used by PyOCR):
 
-`sudo apt install -y libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libmagickwand-dev`
+`sudo apt install -y libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libmagickwand-dev libopenjp2-7-dev libopenjp2-tools`
 
 Install the Python OCR project:
 
