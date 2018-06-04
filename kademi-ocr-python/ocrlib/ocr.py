@@ -70,6 +70,8 @@ class OCRProcessor:
         if name == '-':
             self.__output_file = sys.stdout
         else:
+            filename = Path(name)
+            filename.touch(exist_ok=True)  # will create file, if it exists will do nothing
             self.__output_file = open(name, 'w+')
 
     def _get_tool(self):

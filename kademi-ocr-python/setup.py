@@ -6,7 +6,7 @@ setup(
     name='kademi-ocr-cli',
     version='1.0',
     description='',
-    url='',
+    url='https://github.com/Kademi/kademi-ocr',
     license='',
     packages=[
         'ocrlib'

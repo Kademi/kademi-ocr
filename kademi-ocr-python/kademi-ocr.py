@@ -66,5 +66,6 @@ try:
 except Exception as ex:
     if ocr.output_format == 'json':
         ocr.msg(json.dumps({'error': str(ex)}))
+        sys.exit(1)
     else:
         raise ex
