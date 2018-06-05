@@ -12,6 +12,7 @@ setup(
         'ocrlib'
     ],
     install_requires=[
+        'wand',
         'pyocr',
         'fleep'
     ],
