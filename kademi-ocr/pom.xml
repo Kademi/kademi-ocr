@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.kademi</groupId>
     <artifactId>kademi-ocr</artifactId>
-    <version>1003</version>
+    <version>1002</version>
     <packaging>jar</packaging>
     <distributionManagement>
         <repository>
