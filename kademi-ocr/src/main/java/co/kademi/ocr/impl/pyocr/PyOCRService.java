@@ -41,12 +41,12 @@ public class PyOCRService implements OCRService {
 
     private final Set<OCRListener> listeners = new LinkedHashSet<>();
 
-    private final BlockingQueue<Runnable> processingQueue;
-    private final ThreadPoolExecutor processingThreadPool;
+    //private final BlockingQueue<Runnable> processingQueue;
+    //private final ThreadPoolExecutor processingThreadPool;
 
     public PyOCRService() {
-        this.processingQueue = new LinkedBlockingQueue<>(100);
-        this.processingThreadPool = new ThreadPoolExecutor(10, 20, 30, TimeUnit.SECONDS, processingQueue);
+        //this.processingQueue = new LinkedBlockingQueue<>(100);
+        //this.processingThreadPool = new ThreadPoolExecutor(10, 20, 30, TimeUnit.SECONDS, processingQueue);
     }
 
     @Override
@@ -60,7 +60,8 @@ public class PyOCRService implements OCRService {
             String tempFileName = saveToTempFile(in, jobId);
 
             PyOCRRunnable r = new PyOCRRunnable(tempFileName, jobId, listeners);
-            processingThreadPool.submit(r);
+            r.run();
+            //processingThreadPool.submit(r);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -89,6 +90,6 @@ public class PyOCRService implements OCRService {
      * @return
      */
     protected boolean isAllComplete() {
-        return processingQueue.isEmpty() && processingThreadPool.getActiveCount() == 0;
+        return true;//processingQueue.isEmpty() && processingThreadPool.getActiveCount() == 0;
     }
 }
