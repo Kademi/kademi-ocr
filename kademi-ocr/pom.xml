@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.kademi</groupId>
     <artifactId>kademi-ocr</artifactId>
-    <version>1001</version>
+    <version>1002</version>
     <packaging>jar</packaging>
     <build>
         <plugins>
@@ -42,7 +42,7 @@
             <name>bintray-kademi-Kademi</name>
             <url>https://api.bintray.com/maven/kademi/kademi-public/kademi-ocr/;publish=1</url>
         </repository>
-    </distributionManagement>    
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
