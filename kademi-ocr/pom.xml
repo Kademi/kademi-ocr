@@ -5,6 +5,37 @@
     <artifactId>kademi-ocr</artifactId>
     <version>1001</version>
     <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.14.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <strict>false</strict>
+                            <schemaDirectory>src/main/resources/jaxb/FineReader/fr7.abbyy.com/FineReader_xml</schemaDirectory>
+                            <schemaIncludes>
+                                <include>*.xsd</include>
+                            </schemaIncludes>
+                            <episodeFile>${project.build.directory}/generated-sources/xjc/META-INF/jaxb-FineReader.episode</episodeFile>
+                            <generatePackage>com.abbyy.ocrsdk.finereader</generatePackage>
+                        </configuration>
+                        <id>jaxb-generate-FineReader</id>
+                    </execution>
+                </executions>
+                <configuration>
+                    <forceRegenerate>true</forceRegenerate>
+                    <generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <distributionManagement>
         <repository>
             <id>bintray-kademi-Kademi</id>
@@ -51,6 +82,12 @@
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.10</version>
             <type>jar</type>
         </dependency>
     </dependencies>
