@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -35,6 +37,7 @@ import java.util.Set;
 public class MockOCRService implements OCRService {
 
     private Set<OCRListener> listeners;
+    private final Timer timer = new Timer();
 
     @Override
     public void registerListener(OCRListener l) {
@@ -64,12 +67,17 @@ public class MockOCRService implements OCRService {
         addCell(cells, "2", 100d); // quantity
         addCell(cells, "16.66", 100d); // total cost
 
-
         OCRTableBean t = new OCRTableBean(randomConfidence(), rows);
 
-        for (OCRListener l : listeners) {
-            l.onScanComplete(jobId, t);
-        }
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for (OCRListener l : listeners) {
+                    l.onScanComplete(jobId, t);
+                }
+            }
+        }, 1000);
+
     }
 
     private Double randomConfidence() {
