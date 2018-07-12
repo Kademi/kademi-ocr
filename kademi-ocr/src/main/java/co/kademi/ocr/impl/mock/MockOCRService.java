@@ -35,10 +35,10 @@ import java.util.Set;
 public class MockOCRService implements OCRService {
 
     private Set<OCRListener> listeners;
-    
+
     @Override
     public void registerListener(OCRListener l) {
-        if( listeners == null ) {
+        if (listeners == null) {
             listeners = new HashSet<>();
         }
         listeners.add(l);
@@ -47,24 +47,44 @@ public class MockOCRService implements OCRService {
     @Override
     public void scanToTable(InputStream in, String jobId) {
         List<OCRRow> rows = new ArrayList<>();
-        for( int row=0; row<10; row++ ) {
-            
-            List<OCRCell> cells = new ArrayList();
-            for( int cell=0; cell<10; cell++ ) {
-                OCRCellBean c = new OCRCellBean("Test " + row + " " + cell, randomConfidence());
-                cells.add(c);
-            }
-            OCRRowBean r = new OCRRowBean(cells);
-            rows.add(r);
-        }
+
+        List<OCRCell> cells = addRow(rows);
+        addCell(cells, "ipad1", 100d); // SKU
+        addCell(cells, "user1", 100d); // user
+        addCell(cells, "3", 100d); // quantity
+        addCell(cells, "26.66", 100d); // total cost
+
+        addCell(cells, "ipad2", 100d); // SKU
+        addCell(cells, "user1", 100d); // user
+        addCell(cells, "2", 100d); // quantity
+        addCell(cells, "16.66", 100d); // total cost
+
+        addCell(cells, "ipad1", 100d); // SKU
+        addCell(cells, "user2", 100d); // user
+        addCell(cells, "2", 100d); // quantity
+        addCell(cells, "16.66", 100d); // total cost
+
+
         OCRTableBean t = new OCRTableBean(randomConfidence(), rows);
-        
-        for( OCRListener l : listeners) {
+
+        for (OCRListener l : listeners) {
             l.onScanComplete(jobId, t);
         }
     }
 
     private Double randomConfidence() {
         return Math.random();
+    }
+
+    private List<OCRCell> addRow(List<OCRRow> rows) {
+        List<OCRCell> cells = new ArrayList();
+        OCRRowBean r = new OCRRowBean(cells);
+        rows.add(r);
+        return cells;
+    }
+
+    private void addCell(List<OCRCell> cells, String val, Double conf) {
+        OCRCellBean c = new OCRCellBean(val, conf);
+        cells.add(c);
     }
 }
