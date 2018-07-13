@@ -17,6 +17,10 @@ package com.abbyy.ocrsdk;
 
 import com.abbyy.ocrsdk.finereader.Document;
 import com.amazonaws.util.StringInputStream;
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.AsyncHttpClientConfig;
+import com.ning.http.client.ListenableFuture;
+import com.ning.http.client.Response;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.basic.DateConverter;
 import java.io.File;
@@ -27,14 +31,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.methods.RequestBuilder;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
  *
@@ -120,89 +116,85 @@ public class CloudClient {
         if (task == null || task.getResultUrl() == null) {
             return null;
         } else {
-            HttpUriRequest req = RequestBuilder.get(task.getResultUrl()).build();
-            CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+            AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+            builder.setAcceptAnyCertificate(true);
+            AsyncHttpClient client = new AsyncHttpClient(builder.build());
 
-            CloseableHttpResponse resp = httpClient.execute(req);
+            AsyncHttpClient.BoundRequestBuilder requestBuilder = client.prepareGet(task.getResultUrl());
 
-            StatusLine statusLine = resp.getStatusLine();
+            ListenableFuture<Response> asyncProcess = requestBuilder.execute();
 
-            if (statusLine != null && statusLine.getStatusCode() >= 200 && statusLine.getStatusCode() <= 300) {
-                HttpEntity entity = resp.getEntity();
-                if (entity != null) {
+            Response resp = asyncProcess.get();
 
+            if (resp.getStatusCode() >= 200 && resp.getStatusCode() <= 300) {
+                if (resp.hasResponseBody()) {
                     JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
                     Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-                    return (Document) unmarshaller.unmarshal(entity.getContent());
+                    return (Document) unmarshaller.unmarshal(resp.getResponseBodyAsStream());
                 } else {
-                    throw new Exception("No body content received, Code: " + statusLine.getStatusCode() + " | Message: " + statusLine.getReasonPhrase());
+                    throw new Exception("No body content received, Code: " + resp.getStatusCode() + " | Message: " + resp.getStatusText());
                 }
-            } else if (statusLine != null) {
-                throw new Exception("Error fetching content, Code: " + statusLine.getStatusCode() + " | Message: " + statusLine.getReasonPhrase());
             } else {
-                throw new Exception("Error fetching content, Unknown Reason");
+                throw new Exception("No body content received, Code: " + resp.getStatusCode() + " | Message: " + resp.getStatusText());
             }
         }
     }
 
     protected AbbyyResponse postFileToUrl(byte[] fileBytes, String url) throws IOException, Exception {
-        CloseableHttpClient httpClient = null;
+        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        builder.setAcceptAnyCertificate(true);
+        AsyncHttpClient client = new AsyncHttpClient(builder.build());
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = client.preparePost(url);
+
         try {
-            httpClient = HttpClientBuilder.create().build();
+            requestBuilder.setBody(fileBytes);
 
-            HttpEntity httpEntity = new ByteArrayEntity(fileBytes);
-            HttpUriRequest req = RequestBuilder.post(url).setEntity(httpEntity).build();
+            // Set auth
+            setupAuthorization(requestBuilder);
 
-            setupAuthorization(req);
+            ListenableFuture<Response> asyncProcess = requestBuilder.execute();
 
-            CloseableHttpResponse resp = httpClient.execute(req);
+            Response resp = asyncProcess.get();
 
-            StatusLine statusLine = resp.getStatusLine();
-
-            HttpEntity entity = resp.getEntity();
-            if (entity != null) {
-                return parseResponse(entity.getContent());
+            if (resp.hasResponseBody()) {
+                return parseResponse(resp.getResponseBodyAsStream());
             } else {
-                throw new Exception("No body content received, Code: " + statusLine.getStatusCode() + " | Message: " + statusLine.getReasonPhrase());
+                throw new Exception("No body content received, Code: " + resp.getStatusCode() + " | Message: " + resp.getStatusText());
             }
         } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (Exception e) {
-                    // Do nothing
-                }
+            try {
+                client.close();
+            } catch (Exception e) {
             }
         }
     }
 
     protected AbbyyResponse doGet(String url) throws IOException, Exception {
-        CloseableHttpClient httpClient = null;
+        AsyncHttpClientConfig.Builder builder = new AsyncHttpClientConfig.Builder();
+        builder.setAcceptAnyCertificate(true);
+        AsyncHttpClient client = new AsyncHttpClient(builder.build());
+
+        AsyncHttpClient.BoundRequestBuilder requestBuilder = client.prepareGet(url);
+
         try {
-            httpClient = HttpClientBuilder.create().build();
+            // Set auth
+            setupAuthorization(requestBuilder);
 
-            HttpUriRequest req = RequestBuilder.get(url).build();
+            ListenableFuture<Response> asyncProcess = requestBuilder.execute();
 
-            setupAuthorization(req);
+            Response resp = asyncProcess.get();
 
-            CloseableHttpResponse resp = httpClient.execute(req);
-
-            StatusLine statusLine = resp.getStatusLine();
-
-            HttpEntity entity = resp.getEntity();
-            if (entity != null) {
-                return parseResponse(entity.getContent());
+            if (resp.hasResponseBody()) {
+                return parseResponse(resp.getResponseBodyAsStream());
             } else {
-                throw new Exception("No body content received, Code: " + statusLine.getStatusCode() + " | Message: " + statusLine.getReasonPhrase());
+                throw new Exception("No body content received, Code: " + resp.getStatusCode() + " | Message: " + resp.getStatusText());
             }
         } finally {
-            if (httpClient != null) {
-                try {
-                    httpClient.close();
-                } catch (Exception e) {
-                    // Do nothing
-                }
+            try {
+                client.close();
+            } catch (Exception e) {
             }
         }
     }
@@ -227,7 +219,7 @@ public class CloudClient {
         return null;
     }
 
-    private void setupAuthorization(HttpUriRequest req) {
+    private void setupAuthorization(AsyncHttpClient.BoundRequestBuilder req) {
         String authString = "Basic " + encodeUserPassword();
         authString = authString.replaceAll("\n", "");
         req.addHeader("Authorization", authString);
