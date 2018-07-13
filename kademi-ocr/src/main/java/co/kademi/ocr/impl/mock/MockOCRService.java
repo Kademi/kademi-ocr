@@ -37,7 +37,6 @@ import java.util.TimerTask;
 public class MockOCRService implements OCRService {
 
     private Set<OCRListener> listeners;
-    private final Timer timer = new Timer();
 
     @Override
     public void registerListener(OCRListener l) {
@@ -57,18 +56,21 @@ public class MockOCRService implements OCRService {
         addCell(cells, "3", 100d); // quantity
         addCell(cells, "26.66", 100d); // total cost
 
+        cells = addRow(rows);
         addCell(cells, "ipad2", 100d); // SKU
         addCell(cells, "user1", 100d); // user
         addCell(cells, "2", 100d); // quantity
         addCell(cells, "16.66", 100d); // total cost
 
+        cells = addRow(rows);
         addCell(cells, "ipad1", 100d); // SKU
-        addCell(cells, "user2", 100d); // user
-        addCell(cells, "2", 100d); // quantity
-        addCell(cells, "16.66", 100d); // total cost
+        addCell(cells, "user2", 30d); // user
+        addCell(cells, "2", 70d); // quantity
+        addCell(cells, "16.66", 90d); // total cost
 
         OCRTableBean t = new OCRTableBean(randomConfidence(), rows);
 
+        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
