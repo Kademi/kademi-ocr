@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +50,8 @@ public class AbbyyOCRService implements OCRService {
         this.applicationId = applicationId;
         this.applicationPassword = applicationPassword;
 
-        this.processingQueue = null;
-        this.processingThreadPool = null;
+        this.processingQueue = new LinkedBlockingQueue<>(100);
+        this.processingThreadPool = new ThreadPoolExecutor(10, 20, 30, TimeUnit.SECONDS, processingQueue);
     }
 
     @Override

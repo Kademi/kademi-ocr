@@ -23,7 +23,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,24 +32,6 @@ import org.junit.Test;
 public class AbbyyOcrRunnableTest {
 
     public AbbyyOcrRunnableTest() {
-    }
-
-    @Before
-    public void initSsl() {
-        String javaHomePath = System.getProperty("java.home");
-        String keystore = javaHomePath + "/lib/security/cacerts";
-        String storepass = "changeit";
-        String storetype = "JKS";
-
-        String[][] props = {
-            {"javax.net.ssl.trustStore", keystore,},
-            {"javax.net.ssl.keyStore", keystore,},
-            {"javax.net.ssl.keyStorePassword", storepass,},
-            {"javax.net.ssl.trustStorePassword", storepass,},
-            {"javax.net.ssl.keyStoreType", storetype,},};
-        for (int i = 0; i < props.length; i++) {
-            System.setProperty(props[i][0], props[i][1]);
-        }
     }
 
     /**
