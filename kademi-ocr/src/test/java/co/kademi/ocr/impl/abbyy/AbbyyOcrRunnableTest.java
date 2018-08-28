@@ -37,7 +37,7 @@ public class AbbyyOcrRunnableTest {
     /**
      * Test of run method, of class AbbyyOcrRunnable.
      */
-    @Test
+    //@Test
     public void testRun() {
         Set<OCRListener> listeners = new HashSet<>();
         listeners.add(new OCRListener() {
