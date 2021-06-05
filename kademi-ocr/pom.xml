@@ -7,40 +7,14 @@
     <packaging>jar</packaging>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.14.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <strict>false</strict>
-                            <schemaDirectory>src/main/resources/jaxb/FineReader/fr7.abbyy.com/FineReader_xml</schemaDirectory>
-                            <schemaIncludes>
-                                <include>*.xsd</include>
-                            </schemaIncludes>
-                            <episodeFile>${project.build.directory}/generated-sources/xjc/META-INF/jaxb-FineReader.episode</episodeFile>
-                            <generatePackage>com.abbyy.ocrsdk.finereader</generatePackage>
-                        </configuration>
-                        <id>jaxb-generate-FineReader</id>
-                    </execution>
-                </executions>
-                <configuration>
-                    <forceRegenerate>true</forceRegenerate>
-                    <generateDirectory>${project.build.directory}/generated-sources/xjc</generateDirectory>
-                    <verbose>true</verbose>
-                </configuration>
-            </plugin>
+            
         </plugins>
     </build>
     <distributionManagement>
         <repository>
-            <id>bintray-kademi-Kademi</id>
-            <name>bintray-kademi-Kademi</name>
-            <url>https://api.bintray.com/maven/kademi/kademi-public/kademi-ocr/;publish=1</url>
+            <id>central</id>
+            <name>a0glkgfeusb7f-artifactory-primary-0-releases</name>
+            <url>https://kademi.jfrog.io/artifactory/kademi-libs-release-local</url>
         </repository>
     </distributionManagement>
     <dependencies>
